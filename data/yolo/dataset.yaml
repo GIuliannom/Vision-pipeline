@@ -1,0 +1,14 @@
+# YOLO dataset descriptor — edit paths and class names to match your data.
+# Paths are relative to this file (or absolute).
+
+path: .                  # dataset root
+train: images/train
+val: images/val
+# test: images/test      # optional
+
+# Class index -> name. Index must match the integers in your .txt label files.
+names:
+  0: person
+  1: dog
+  2: cat
+  # add more as needed

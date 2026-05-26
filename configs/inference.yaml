@@ -1,0 +1,44 @@
+# Inference & fusion configuration
+# Used by scripts/run_webcam.py
+
+# Default backend at startup: yolo | video | both
+default_backend: both
+
+# Camera
+camera_index: 0          # 0 = default webcam
+frame_width: 1280
+frame_height: 720
+
+# Model paths (filled in after training/export)
+# These can point to either .pt (native) or .onnx (unified runtime)
+yolo_weights: runs/yolo/train/weights/best.pt
+yolo_onnx: runs/yolo/train/weights/best.onnx
+video_weights: runs/video/best.pt
+video_onnx: runs/video/best.onnx
+
+# Prefer ONNX if available (faster, unified runtime). false = native PyTorch.
+prefer_onnx: true
+
+# YOLO inference
+yolo_conf: 0.25          # confidence threshold
+yolo_iou: 0.45           # NMS IoU threshold
+yolo_imgsz: 640
+
+# Video inference
+video_clip_len: 8        # must match training num_frames
+video_sampling_rate: 8
+video_crop_size: 224
+video_side_size: 256
+video_topk: 3            # show top-k action predictions
+# Class label map for the action model (one per line, index = class id)
+video_labels_file: configs/video_labels.txt
+
+# Fusion
+# How to combine YOLO + Video outputs when backend = "both":
+#   concat   - just report both side by side
+#   weighted - weight by per-model confidence (for downstream alerting rules)
+fusion_mode: concat
+
+# Display
+show_fps: true
+show_help_overlay: true

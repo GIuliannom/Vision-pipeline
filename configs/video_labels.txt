@@ -1,0 +1,7 @@
+# One action label per line. Order MUST match the class indices the model
+# was trained on (alphabetical by folder name in data/video/train/).
+# Example for a 4-class setup:
+idle
+walking
+running
+waving

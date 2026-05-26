@@ -1,0 +1,32 @@
+# PyTorchVideo (action recognition) training configuration
+# Used by scripts/train_video.py
+
+# Model architecture
+# Options: slow_r50, slowfast_r50, x3d_xs, x3d_s, x3d_m, x3d_l, mvit_base_16x4
+# x3d_xs is fastest, x3d_l is most accurate. slow_r50 is a good default.
+model_name: slow_r50
+pretrained: true     # load Kinetics-400 weights as init
+
+# Number of action classes you're training on (set after building dataset)
+num_classes: 4
+
+# Data
+data_root: data/video    # see data/video/README.md for layout
+num_frames: 8            # clip length (slow_r50 uses 8, slowfast varies)
+sampling_rate: 8         # frame stride within a clip
+fps: 30                  # source video fps
+crop_size: 224
+side_size: 256
+
+# Training
+epochs: 50
+batch_size: 8
+num_workers: 4
+device: cuda             # cuda, cpu, mps
+lr: 0.0001
+weight_decay: 0.0001
+warmup_epochs: 2
+
+# Output
+output_dir: runs/video
+checkpoint_name: best.pt

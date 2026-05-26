@@ -1,0 +1,38 @@
+# YOLO training configuration
+# Used by scripts/train_yolo.py
+
+# Base model to fine-tune from (Ultralytics will download on first use)
+# Options: yolov8n.pt, yolov8s.pt, yolov8m.pt, yolov8l.pt, yolov8x.pt
+# Or YOLO11: yolo11n.pt, yolo11s.pt, etc.
+base_model: yolov8n.pt
+
+# Path to your dataset YAML (see data/yolo/dataset.yaml)
+# data: data/yolo/dataset.yaml
+data: coco128.yaml
+
+# Training
+epochs: 100
+imgsz: 640
+batch: 16
+device: 0          # 0 = first GPU, "cpu" for CPU, "mps" for Apple Silicon
+workers: 8
+patience: 30       # early stopping patience
+
+# Optimization
+optimizer: auto    # auto, SGD, Adam, AdamW
+lr0: 0.01
+lrf: 0.01
+momentum: 0.937
+weight_decay: 0.0005
+
+# Augmentation
+mosaic: 1.0
+mixup: 0.0
+hsv_h: 0.015
+hsv_s: 0.7
+hsv_v: 0.4
+
+# Output
+project: runs/yolo
+name: train
+exist_ok: false
