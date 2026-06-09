@@ -79,19 +79,46 @@ def export_video(video_cfg_path: str) -> Path:
     return onnx_path
 
 
+def export_rtdetr(rtdetr_cfg_path: str) -> Path:
+    """Use Ultralytics' export to produce best.onnx next to best.pt."""
+    from ultralytics import RTDETR
+
+    cfg = load_config(rtdetr_cfg_path)
+    weights_dir = Path(cfg.get("project", "runs/rtdetr")) / cfg.get("name", "train") / "weights"
+    pt_path = weights_dir / "best.pt"
+    if not pt_path.exists():
+        raise FileNotFoundError(
+            f"RT-DETR weights not found at {pt_path}. Train first."
+        )
+
+    model = RTDETR(str(pt_path))
+    onnx_path = model.export(
+        format="onnx",
+        imgsz=cfg["imgsz"],
+        dynamic=True,
+        simplify=True,
+        opset=17,
+    )
+    print(f"✓ RT-DETR exported to ONNX: {onnx_path}")
+    return Path(onnx_path)
+
+
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument(
         "--target",
-        choices=["yolo", "video", "both"],
-        default="both",
+        choices=["yolo", "rtdetr", "video", "all"],
+        default="all",
         help="Which model to export.",
     )
     p.add_argument("--yolo-config", default="configs/yolo.yaml")
+    p.add_argument("--rtdetr-config", default="configs/rtdetr.yaml")
     p.add_argument("--video-config", default="configs/video.yaml")
     args = p.parse_args()
 
-    if args.target in ("yolo", "both"):
+    if args.target in ("yolo", "all"):
         export_yolo(args.yolo_config)
-    if args.target in ("video", "both"):
+    if args.target in ("rtdetr", "all"):
+        export_rtdetr(args.rtdetr_config)
+    if args.target in ("video", "all"):
         export_video(args.video_config)

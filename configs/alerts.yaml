@@ -1,0 +1,32 @@
+# Background alert rules.
+# The watcher polls the live scene state and fires the LLM when any rule matches.
+# Each rule has a cooldown so you don't get spammed.
+
+poll_interval_seconds: 2.0
+cooldown_seconds: 30.0
+
+rules:
+  # Fire when a person appears with reasonable confidence
+  - name: person_detected
+    type: object_present
+    label: person
+    min_conf: 0.6
+
+  # Fire when there are 3+ people in frame
+  - name: crowded_scene
+    type: object_count
+    label: person
+    op: ">="
+    value: 3
+
+  # Fire when an action is confidently detected (example: 'waving')
+  - name: waving_action
+    type: action_matches
+    label: waving
+    min_conf: 0.6
+
+  # Fire if no person seen for 60 seconds (uncomment if you want it)
+  # - name: room_empty
+  #   type: object_absent
+  #   label: person
+  #   duration_seconds: 60

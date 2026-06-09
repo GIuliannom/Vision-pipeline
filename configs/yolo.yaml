@@ -7,8 +7,7 @@
 base_model: yolov8n.pt
 
 # Path to your dataset YAML (see data/yolo/dataset.yaml)
-# data: data/yolo/dataset.yaml
-data: coco128.yaml
+data: data/yolo/dataset.yaml
 
 # Training
 epochs: 100

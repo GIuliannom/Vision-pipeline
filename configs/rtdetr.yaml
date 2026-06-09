@@ -1,0 +1,28 @@
+# RT-DETR training configuration.
+# Reuses the SAME dataset YAML as YOLO (data/yolo/dataset.yaml) so both
+# detectors share class indices and names — required for ensemble fusion.
+
+# Base model. Ultralytics provides: rtdetr-l.pt (large), rtdetr-x.pt (xlarge).
+# RT-DETR doesn't have nano/small variants; start with rtdetr-l.pt.
+base_model: rtdetr-l.pt
+
+# IMPORTANT: same dataset as YOLO so class lists match.
+data: data/yolo/dataset.yaml
+
+# Training
+epochs: 100
+imgsz: 640
+batch: 8           # RT-DETR is heavier than YOLO; smaller batch
+device: 0
+workers: 8
+patience: 30
+
+# RT-DETR works best with AdamW + low LR (transformer-style training)
+optimizer: AdamW
+lr0: 0.0001
+lrf: 0.01
+
+# Output
+project: runs/rtdetr
+name: train
+exist_ok: true

@@ -8,15 +8,24 @@ pyyaml>=6.0
 # YOLO
 ultralytics>=8.1.0
 
-# PyTorchVideo (action recognition)
+# PyTorchVideo
 pytorchvideo>=0.1.5
-av>=10.0.0  # video decoding backend
+av>=10.0.0
 
-# ONNX runtime + export
+# ONNX
 onnx>=1.15.0
 onnxruntime>=1.16.0
-# Use onnxruntime-gpu instead if you have CUDA:
-# onnxruntime-gpu>=1.16.0
+# For GPU: onnxruntime-gpu>=1.16.0
+
+# MCP server (FastMCP / official Python SDK)
+mcp>=1.0.0
 
 # Utilities
 tqdm>=4.65.0
+
+# NOTE: Ollama itself is a separate binary, not a Python package.
+# Install from https://ollama.com (one-time):
+#   curl -fsSL https://ollama.com/install.sh | sh
+# Then:
+#   ollama serve
+#   ollama pull llama3.2:3b

@@ -18,7 +18,16 @@ def draw_detections(frame: np.ndarray, dets: List[Dict[str, Any]]) -> None:
         x1, y1, x2, y2 = map(int, d["box"])
         color = _color_for_label(d["label"])
         cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
-        text = f"{d['label']} {d['conf']:.2f}"
+        # Optional source tag from the ensemble: "both" / "a_only" / "b_only"
+        src = d.get("source")
+        tag = ""
+        if src == "both":
+            tag = " ✓"          # both detectors agreed
+        elif src == "a_only":
+            tag = " [A]"
+        elif src == "b_only":
+            tag = " [B]"
+        text = f"{d['label']} {d['conf']:.2f}{tag}"
         (tw, th), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
         cv2.rectangle(frame, (x1, y1 - th - 6), (x1 + tw + 4, y1), color, -1)
         cv2.putText(
@@ -61,9 +70,9 @@ def draw_hud(
     )
     if show_help:
         cv2.putText(
-            frame, "1: yolo  2: video  3: both  q: quit",
+            frame, "1:yolo  2:rtdetr  3:ensemble  4:video  5:all  q:quit",
             (12, h - 10),
-            cv2.FONT_HERSHEY_SIMPLEX, 0.55, (200, 200, 200), 2,
+            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 2,
         )
     if summary:
         cv2.putText(

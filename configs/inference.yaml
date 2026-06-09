@@ -1,8 +1,17 @@
 # Inference & fusion configuration
-# Used by scripts/run_webcam.py
+# Used by scripts/run_all.py and scripts/run_webcam.py
 
-# Default backend at startup: yolo | video | both
-default_backend: both
+# Default backend at startup.
+# Detection-only backends:
+#   yolo     - YOLO only
+#   rtdetr   - RT-DETR only
+#   ensemble - YOLO + RT-DETR fused (score-combined detections)
+# Plus the video model:
+#   video    - PyTorchVideo action classifier only
+# Combinations:
+#   all      - YOLO + RT-DETR (ensemble) + video
+#   both     - alias for "all" (kept for v1/v2 compatibility)
+default_backend: all
 
 # Camera
 camera_index: 0          # 0 = default webcam
@@ -10,9 +19,11 @@ frame_width: 1280
 frame_height: 720
 
 # Model paths (filled in after training/export)
-# These can point to either .pt (native) or .onnx (unified runtime)
+# These can point to either .pt (native) or .onnx
 yolo_weights: runs/yolo/train/weights/best.pt
 yolo_onnx: runs/yolo/train/weights/best.onnx
+rtdetr_weights: runs/rtdetr/train/weights/best.pt
+rtdetr_onnx: runs/rtdetr/train/weights/best.onnx
 video_weights: runs/video/best.pt
 video_onnx: runs/video/best.onnx
 
@@ -20,9 +31,21 @@ video_onnx: runs/video/best.onnx
 prefer_onnx: true
 
 # YOLO inference
-yolo_conf: 0.25          # confidence threshold
-yolo_iou: 0.45           # NMS IoU threshold
+yolo_conf: 0.25
+yolo_iou: 0.45
 yolo_imgsz: 640
+
+# RT-DETR inference
+rtdetr_conf: 0.25
+rtdetr_iou: 0.45
+rtdetr_imgsz: 640
+
+# Detector ensemble fusion (when backend includes both YOLO and RT-DETR)
+ensemble_iou_threshold: 0.5    # min IoU for two boxes to be considered the same object
+ensemble_method: average       # average | weighted | multiply | max
+ensemble_weight_yolo: 1.0      # only used when ensemble_method == weighted
+ensemble_weight_rtdetr: 1.0
+ensemble_unmatched_penalty: 0.7  # multiply conf for detections only one detector saw
 
 # Video inference
 video_clip_len: 8        # must match training num_frames
